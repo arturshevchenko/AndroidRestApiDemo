@@ -87,13 +87,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void createPet(PetModel pet) throws IOException {
         URL url = NetworkUtils.buildUrl();
-        Log.i("API", "FETCHED DATA");
+        Log.i("API", "CALL API");
         new DataTask(pet).execute(url);
     }
 
     public void getPetById(int petID) throws IOException {
         URL url = NetworkUtils.buildUrl();
-        Log.i("API", "FETCHED DATA");
+        Log.i("API", "CALL API");
         new DataTaskGet(petID).execute(url);
     }
 

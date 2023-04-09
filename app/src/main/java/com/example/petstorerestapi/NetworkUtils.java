@@ -1,6 +1,7 @@
 package com.example.petstorerestapi;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class NetworkUtils {
 
             // Set request method to POST
             connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
 
             // Set request headers
             connection.setRequestProperty("Content-Type", "application/json");
@@ -54,19 +56,30 @@ public class NetworkUtils {
             outputStream.flush();
             outputStream.close();
 
-            // Read response from input stream
+            // Send request and Read response from input stream
+            int responseCode = connection.getResponseCode();
+
             InputStream inputStream = connection.getInputStream();
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while ((line = reader.readLine()) != null) {
-                response.append(line);
+                response.append(line).append("\n");
             }
             reader.close();
-            inputStream.close();
 
+            String responseBody = response.toString();
+            // log request and response details
+            Log.d("API", "API request:\nURL: " + url.toString() +
+                    "\nMethod: POST\nHeaders: " + connection.getHeaderFields().toString() +
+                    "\nBody: " + requestBody +
+                    "\nResponse code: " + responseCode +
+                    "\nResponse body: " + responseBody);
+
+            inputStream.close();
             // Print response
-            return response.toString();
+            return responseBody;
         }catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -83,7 +96,7 @@ public class NetworkUtils {
             URL url = new URL(BASE_URL + "/" + petID);
             connection = (HttpURLConnection) url.openConnection();
 
-            // Set request method to POST
+            // Set request method to GET
             connection.setRequestMethod("GET");
 
             // Set request headers
@@ -91,18 +104,27 @@ public class NetworkUtils {
             connection.setRequestProperty("Accept", "application/json");
 
             // Read response from input stream
+            int responseCode = connection.getResponseCode();
+
             InputStream inputStream = connection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while ((line = reader.readLine()) != null) {
-                response.append(line);
+                response.append(line).append("\n");
             }
             reader.close();
-            inputStream.close();
 
+            String responseBody = response.toString();
+            // log request and response details
+            Log.d("API", "API request:\nURL: " + url.toString() +
+                    "\nMethod: GET\nHeaders: " + connection.getHeaderFields().toString() +
+                    "\nResponse code: " + responseCode +
+                    "\nResponse body: " + responseBody);
+
+            inputStream.close();
             // Print response
-            return response.toString();
+            return responseBody;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
