@@ -1,7 +1,7 @@
 package com.example.petstorerestapi;
 
-import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,13 +10,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class MainActivity extends Activity implements View.OnClickListener {
 
     EditText edpetID;
     EditText edpetName;
@@ -26,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button btnSubmit;
     Button btnSearch;
+    Button btnCPUTask;
+    Button btnMemoryTask;
 
     TextView tvResult;
     TextView tvResultFind;
@@ -35,9 +45,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String petStatus = null;
     int findPetID;
 
+    Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("https://petstore.swagger.io/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
+    ApiService apiService = retrofit.create(ApiService.class);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         edpetID = findViewById(R.id.pet_id);
@@ -49,9 +67,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         edfindPetID = findViewById(R.id.find_pet_id);
         btnSearch = findViewById(R.id.find_pet_btn);
+        btnCPUTask = findViewById(R.id.cpu_task_find);
+        btnMemoryTask = findViewById(R.id.mem_task_find);
 
         btnSubmit.setOnClickListener(this);
         btnSearch.setOnClickListener(this);
+        btnCPUTask.setOnClickListener(this);
+        btnMemoryTask.setOnClickListener(this);
+
+
     }
 
 
@@ -83,23 +107,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         }
+        if (v.getId() == R.id.cpu_task_find){
+            IntensiveCPUTask.run();
+        }
+        if (v.getId() == R.id.mem_task_find){
+            IntensiveMemoryTask.run();
+        }
     }
 
     public void createPet(PetModel pet) throws IOException {
         URL url = NetworkUtils.buildUrl();
-        Log.i("API", "CALL API");
+        Log.i("APIS_LOGS", "CALL API");
         new DataTask(pet).execute(url);
     }
 
     public void getPetById(int petID) throws IOException {
-        URL url = NetworkUtils.buildUrl();
-        Log.i("API", "CALL API");
-        new DataTaskGet(petID).execute(url);
+//        URL url = NetworkUtils.buildUrl();
+//        Log.i("API", "CALL API");
+//        new DataTaskGet(petID).execute(url);
+
+        Call<PetModel> call = apiService.getPetById(petID);
+        call.enqueue(new Callback<PetModel>() {
+            @Override
+            public void onResponse(Call<PetModel> call, Response<PetModel> response) {
+                if (response.isSuccessful()) {
+                    PetModel pet = response.body();
+
+                    Log.i("APIS_LOGS", "CALL API");
+                    Log.i("APIS_LOGS", response.body().toString());
+                    tvResultFind.setText("PET IS:" + pet.toString());
+                } else {
+                    Log.i("APIS_LOGS", " NO PET FOUND");
+                    Log.i("APIS_LOGS", response.toString());
+                    tvResultFind.setText("NO PET FOUND");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PetModel> call, Throwable t) {
+                Log.i("APIS_LOGS", " FAILED TO CALL API");
+            }
+        });
     }
 
     public class DataTask extends AsyncTask<URL, Void, String> {
         PetModel pet;
-        int petID;
 
         DataTask(PetModel pet) {
             this.pet = pet;

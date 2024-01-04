@@ -9,45 +9,52 @@
 
 
     <EditText
+        android:id="@+id/pet_id"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Enter Pet ID"
-        android:id="@+id/pet_id"/>
+        android:hint="Enter Pet ID" />
+
     <EditText
+        android:id="@+id/pet_name"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Enter Pet Name"
-        android:id="@+id/pet_name"/>
+        android:hint="Enter Pet Name" />
+
     <EditText
+        android:id="@+id/status"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Enter Pet Status"
-        android:id="@+id/status"/>
+        android:hint="Enter Pet Status" />
+
     <Button
+        android:id="@+id/submit_btn"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:id="@+id/submit_btn"
-        android:text="Create Pet"/>
+        android:text="Create Pet" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/teal_700" />
+
     <TextView
         android:id="@+id/resplbl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Your response is:" />
+
     <TextView
+        android:id="@+id/result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="2"
-        android:id="@+id/result"/>
+        android:maxLines="2" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/purple_700" />
+
     <TextView
         android:id="@+id/getlbl"
         android:layout_width="wrap_content"
@@ -55,24 +62,51 @@
         android:text="Get pet By ID:" />
 
     <EditText
+        android:id="@+id/find_pet_id"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Enter Pet ID"
-        android:id="@+id/find_pet_id"/>
+        android:hint="Enter Pet ID" />
+
     <Button
+        android:id="@+id/find_pet_btn"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:id="@+id/find_pet_btn"
-        android:text="Find Pet"/>
+        android:text="Find Pet" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/teal_700" />
+
     <TextView
+        android:id="@+id/result_find"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="2"
-        android:id="@+id/result_find"/>
+        android:maxLines="3" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/purple_700" />
+
+    <Button
+        android:id="@+id/cpu_task_find"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="SUPER INTENCE CPU TASK" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/purple_700" />
+
+    <Button
+        android:id="@+id/mem_task_find"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="SUPER INTENCE Memory TASK" />
 
 </LinearLayout>

@@ -1,5 +1,12 @@
 package com.example.petstorerestapi;
 
+import androidx.annotation.NonNull;
+
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 public class PetModel {
     private int id;
     private String name;
@@ -16,7 +23,7 @@ public class PetModel {
         this.id = id;
     }
 
-    public String getName() {
+    public String getPetName() {
         return name;
     }
 
@@ -31,4 +38,10 @@ public class PetModel {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @NonNull
+    public String toString(){
+        return "PET: " + this.id + " " + this.name + " " + this.status;
+    }
+
 }

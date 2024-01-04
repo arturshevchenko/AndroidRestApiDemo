@@ -3,6 +3,7 @@ package com.example.petstorerestapi;
 import android.net.Uri;
 import android.util.Log;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,7 @@ public class NetworkUtils {
 
     public static String createPet(PetModel pet) throws IOException {
         HttpURLConnection connection = null;
+
         try {
             URL url = new URL(BASE_URL);
             connection = (HttpURLConnection) url.openConnection();
@@ -49,7 +51,7 @@ public class NetworkUtils {
                     "\"id\": %d, " +
                     "\"name\": \"%s\", " +
                     "\"status\": \"%s\"" +
-                    "}", pet.getId(), pet.getName(), pet.getStatus());
+                    "}", pet.getId(), pet.getPetName(), pet.getStatus());
 
             OutputStream outputStream = connection.getOutputStream();
             outputStream.write(requestBody.getBytes());
@@ -71,7 +73,7 @@ public class NetworkUtils {
 
             String responseBody = response.toString();
             // log request and response details
-            Log.d("API", "API request:\nURL: " + url.toString() +
+            Log.d("APIS_LOGS", "API request:\nURL: " + url +
                     "\nMethod: POST\nHeaders: " + connection.getHeaderFields().toString() +
                     "\nBody: " + requestBody +
                     "\nResponse code: " + responseCode +
@@ -80,11 +82,11 @@ public class NetworkUtils {
             inputStream.close();
             // Print response
             return responseBody;
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         } finally {
-            if(connection!=null)
+            if (connection != null)
                 connection.disconnect();
         }
     }
@@ -117,7 +119,7 @@ public class NetworkUtils {
 
             String responseBody = response.toString();
             // log request and response details
-            Log.d("API", "API request:\nURL: " + url.toString() +
+            Log.d("APIS_LOGS", "API request:\nURL: " + url +
                     "\nMethod: GET\nHeaders: " + connection.getHeaderFields().toString() +
                     "\nResponse code: " + responseCode +
                     "\nResponse body: " + responseBody);
