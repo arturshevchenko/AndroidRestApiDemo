@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
+import com.appspector.sdk.instrumentation.AppSpectorOkHttp3Interceptor;
+import com.appspector.sdk.monitors.events.CustomEventsSender;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,9 +48,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
     String petStatus = null;
     int findPetID;
 
+    OkHttpClient client = new OkHttpClient.Builder()
+            .addInterceptor(new AppSpectorOkHttp3Interceptor())
+            .build();
+
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://petstore.swagger.io/v2/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
             .build();
 
     ApiService apiService = retrofit.create(ApiService.class);
@@ -85,6 +93,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             petStatus = edpetStatus.getText().toString();
             PetModel pet = new PetModel(petID, petName, petStatus);
             try {
+                CustomEventsSender.send(pet.new PetModelEvent());
                 createPet(pet);
             } catch (IOException e) {
                 e.printStackTrace();
