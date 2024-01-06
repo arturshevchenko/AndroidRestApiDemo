@@ -74,8 +74,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         btnSearch.setOnClickListener(this);
         btnCPUTask.setOnClickListener(this);
         btnMemoryTask.setOnClickListener(this);
-
-
     }
 
 
@@ -85,13 +83,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             petID = Integer.parseInt(edpetID.getText().toString());
             petName = edpetName.getText().toString();
             petStatus = edpetStatus.getText().toString();
-
-            PetModel pet = new PetModel();
-            pet.setId(petID);
-            pet.setName(petName);
-            pet.setStatus(petStatus);
-
-            // crete pet
+            PetModel pet = new PetModel(petID, petName, petStatus);
             try {
                 createPet(pet);
             } catch (IOException e) {
@@ -100,32 +92,46 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         if (v.getId() == R.id.find_pet_btn) {
             findPetID = Integer.parseInt(edfindPetID.getText().toString());
-
             try {
                 getPetById(findPetID);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        if (v.getId() == R.id.cpu_task_find){
+        if (v.getId() == R.id.cpu_task_find) {
             IntensiveCPUTask.run();
         }
-        if (v.getId() == R.id.mem_task_find){
+        if (v.getId() == R.id.mem_task_find) {
             IntensiveMemoryTask.run();
         }
     }
 
     public void createPet(PetModel pet) throws IOException {
-        URL url = NetworkUtils.buildUrl();
-        Log.i("APIS_LOGS", "CALL API");
-        new DataTask(pet).execute(url);
+        Call<PetModel> call = apiService.createPet(pet);
+        call.enqueue(new Callback<PetModel>() {
+            @Override
+            public void onResponse(Call<PetModel> call, Response<PetModel> response) {
+                if (response.isSuccessful()) {
+                    PetModel pet = response.body();
+
+                    Log.i("APIS_LOGS", "CALL API");
+                    Log.i("APIS_LOGS", response.body().toString());
+                    tvResult.setText("PET IS:" + pet.toString());
+                } else {
+                    Log.i("APIS_LOGS", " CAN NOT CREATE PET");
+                    Log.i("APIS_LOGS", response.toString());
+                    tvResult.setText("CAN NOT CREATE PET");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PetModel> call, Throwable t) {
+                Log.i("APIS_LOGS", " FAILED TO CALL API" + t.getMessage());
+            }
+        });
     }
 
     public void getPetById(int petID) throws IOException {
-//        URL url = NetworkUtils.buildUrl();
-//        Log.i("API", "CALL API");
-//        new DataTaskGet(petID).execute(url);
-
         Call<PetModel> call = apiService.getPetById(petID);
         call.enqueue(new Callback<PetModel>() {
             @Override
@@ -148,74 +154,5 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Log.i("APIS_LOGS", " FAILED TO CALL API");
             }
         });
-    }
-
-    public class DataTask extends AsyncTask<URL, Void, String> {
-        PetModel pet;
-
-        DataTask(PetModel pet) {
-            this.pet = pet;
-        }
-
-        @Override
-        protected String doInBackground(URL... urls) {
-            String data = null;
-            try {
-                data = NetworkUtils.createPet(this.pet);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return data;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            printResAsString(s);
-        }
-
-        public void printResAsString(String data) {
-            JSONObject myObject = null;
-            try {
-                myObject = new JSONObject(data);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            tvResult.setText(myObject.toString());
-        }
-    }
-
-
-    public class DataTaskGet extends AsyncTask<URL, Void, String> {
-        int petID;
-
-        DataTaskGet(int petID) {
-            this.petID = petID;
-        }
-
-        @Override
-        protected String doInBackground(URL... urls) {
-            String data = null;
-            try {
-                data = NetworkUtils.getPet(this.petID);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return data;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            printResAsString(s);
-        }
-
-        public void printResAsString(String data) {
-            JSONObject myObject = null;
-            try {
-                myObject = new JSONObject(data);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            tvResultFind.setText(myObject.toString());
-        }
     }
 }
